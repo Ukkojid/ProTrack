@@ -1,12 +1,12 @@
-import Link from 'next/link'
-import React from 'react'
+import Link from "next/link";
+import React from "react";
 
 const register = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-indigo-50 flex items-center justify-center px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
         <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">
-          Create Your Account 🚀
+          Create New Account
         </h2>
         <form className="space-y-5">
           {/* Full Name */}
@@ -57,6 +57,19 @@ const register = () => {
             />
           </div>
 
+          {/* User Role */}
+          <div className="w-full">
+            <label className='className="block text-sm font-medium text-gray-700 mb-1'>
+              Select Role
+            </label>
+            <div className="w-full ">
+              <select name="role" id="role" className="h-8 w-full px-4 outline-none rounded-lg xl border border-gray-300 " >
+                <option value="Student">Student</option>
+                <option value="Faculty">Faculty</option>
+              </select>
+            </div>
+          </div>
+
           {/* Button */}
           <button
             type="submit"
@@ -76,13 +89,16 @@ const register = () => {
         {/* Login Link */}
         <p className="mt-6 text-center text-sm text-gray-600">
           Already have an account?{" "}
-          <Link href="/auth/login" className="text-indigo-600 hover:underline font-medium">
+          <Link
+            href="/auth/login"
+            className="text-indigo-600 hover:underline font-medium"
+          >
             Login
           </Link>
         </p>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default register
+export default register;

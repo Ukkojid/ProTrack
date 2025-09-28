@@ -1,7 +1,36 @@
+"use client"
 import Link from "next/link";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
 const Login = () => {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter();
+
+  const handlesubmit = (e)=> {
+    e.preventDefault();
+
+    if(!email || !password){
+      setError("Please fill in both field.");
+      return;
+    }
+
+    if(email === "admin" && password === "admin"){
+      router.push("/users/admin/dashboard");
+    } 
+    else if(email === "2" && password === "2"){
+      router.push("/users/students/dashboard");
+    }
+    else if(email === "1" && password === "1"){
+      router.push("/users/faculty/dashboard");
+    }
+    else {
+      setError("Invalid email and password")
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-indigo-50 flex flex-col">
@@ -9,17 +38,19 @@ const Login = () => {
       <main className="flex-grow flex items-center justify-center px-4">
         <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
           <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">
-            Welcome Back 👋
+            Login
           </h2>
-          <form className="space-y-5">
+          <form onSubmit={handlesubmit} className="space-y-5">
             {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Email
               </label>
               <input
-                type="email"
+                type="text"
                 placeholder="email"
+                value={email}
+                onChange={(e)=> setEmail(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               />
             </div>
@@ -31,7 +62,9 @@ const Login = () => {
               </label>
               <input
                 type="password"
-                placeholder="••••••••"
+                placeholder="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               />
             </div>
@@ -50,10 +83,12 @@ const Login = () => {
               </a>
             </div>
 
+             {error && <p className="text-red-500 text-sm">{error}</p>}
+
             {/* Button */}
             <button
               type="submit"
-              className="w-full bg-indigo-600 text-white py-2.5 rounded-lg font-semibold hover:bg-indigo-700 transition"
+              className="w-full bg-indigo-600 text-white py-2.5 rounded-lg font-semibold hover:bg-indigo-700 transition cursor-pointer"
             >
               Login
             </button>

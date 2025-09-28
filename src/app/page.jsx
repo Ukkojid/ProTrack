@@ -15,7 +15,7 @@ const Home = () => {
         </p>
         <Link
           href="/auth/login"
-          className="inline-block bg-indigo-600 text-white px-8 py-3 rounded-xl shadow hover:bg-indigo-700 transition"
+          className="inline-block bg-zinc-800 text-white px-8 py-3 rounded-xl shadow hover:bg-black transition"
         >
           Get Started
         </Link>
