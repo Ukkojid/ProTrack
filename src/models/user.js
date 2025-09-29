@@ -1,7 +1,10 @@
 import mongoose, { Schema } from "mongoose";
 
 const userSchema = new Schema({
-    name: String,
+    name: {
+        type: String,
+        require: true
+    },
     email: {
         type: String,
         unique: true,
@@ -10,8 +13,13 @@ const userSchema = new Schema({
     password: {
         type: String,
         require: true
+    },
+    role: {
+        type: String,
+        enum: ["student", "faculty", "admin"],
+        default: "student"
     }
 })
 
 
-export const User = mongoose.models.User || mongoose.model("User", userSchema); 
+export default mongoose.models.User || mongoose.model("User", userSchema); 
