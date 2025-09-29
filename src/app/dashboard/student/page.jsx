@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import Image from "next/image";
 import { FaHome, FaProjectDiagram, FaTasks, FaUpload, FaComments, FaUser, FaCog, FaBell, FaSignOutAlt } from "react-icons/fa";
 
 export default function StudentDashboard() {
@@ -50,7 +49,7 @@ export default function StudentDashboard() {
       <main className="flex-1">
         {/* Top Navbar */}
         <header className="flex justify-between items-center bg-white shadow px-6 py-4">
-          <h1 className="text-2xl font-bold text-blue-900">Welcome, Student 👋</h1>
+          <h1 className="text-2xl font-bold text-blue-900">Welcome,  </h1>
           <div className="flex items-center space-x-6">
             <input
               type="text"
@@ -66,19 +65,19 @@ export default function StudentDashboard() {
           </div>
         </header>
 
-        {/* Dashboard Widgets */}
+        {/* Dashboard  */}
         <section className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Ongoing Projects */}
           <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
             <h2 className="text-xl font-bold mb-4">Ongoing Projects</h2>
             <ul className="space-y-2">
-              <li className="p-3 border rounded-lg hover:bg-blue-50">AI Research Project - 70% complete</li>
-              <li className="p-3 border rounded-lg hover:bg-blue-50">Web Development Project - 40% complete</li>
+              <li className="p-3 border rounded-lg hover:bg-blue-50">ProTrack - 30% complete</li>
             </ul>
           </div>
 
           {/* Task Tracker */}
           <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+            <h2 className="text-xl font-bold mb-2 p-2 rounded-2xl bg-black text-yellow-400 text-center">Show All Task  </h2>
             <h2 className="text-xl font-bold mb-4">Task Tracker</h2>
             <p>Completed: <span className="font-bold text-green-600">12</span></p>
             <p>Pending: <span className="font-bold text-red-600">5</span></p>
@@ -91,11 +90,11 @@ export default function StudentDashboard() {
           <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
             <h2 className="text-xl font-bold mb-4">Faculty Feedback</h2>
             <div className="p-3 border rounded-lg mb-2">
-              "Good progress on AI project. Improve documentation." - Prof. Sharma
+              "Good progress on ProTrack. Improve documentation." - Prof. Sunita Naik
             </div>
-            <div className="p-3 border rounded-lg">
-              "Keep working on backend tasks." - Prof. Rao
-            </div>
+            {/* <div className="p-3 border rounded-lg">
+              "Keep working on backend tasks." - Prof. Saniket Kuddo
+            </div> */}
           </div>
 
           {/* Recent Submissions */}
@@ -111,13 +110,13 @@ export default function StudentDashboard() {
               </thead>
               <tbody>
                 <tr className="border-t">
-                  <td className="p-2">AI Research</td>
-                  <td className="p-2">2025-09-20</td>
+                  <td className="p-2">Project Report</td>
+                  <td className="p-2">30-09-2025</td>
                   <td className="p-2 text-green-600">Approved</td>
                 </tr>
                 <tr className="border-t">
-                  <td className="p-2">Web Development</td>
-                  <td className="p-2">2025-09-18</td>
+                  <td className="p-2">40% improment</td>
+                  <td className="p-2">30-09-2025</td>
                   <td className="p-2 text-yellow-600">Pending</td>
                 </tr>
               </tbody>
@@ -125,13 +124,13 @@ export default function StudentDashboard() {
           </div>
 
           {/* Performance Chart (Placeholder) */}
-          <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition col-span-1 md:col-span-2 lg:col-span-3 text-center">
+          {/* <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition col-span-1 md:col-span-2 lg:col-span-3 text-center">
             <h2 className="text-xl font-bold mb-4">Performance Overview</h2>
             <p className="text-gray-600 mb-2">[Chart will go here – can integrate Recharts/Chart.js later]</p>
             <div className="h-40 bg-gray-200 rounded-lg flex items-center justify-center">
               📊
             </div>
-          </div>
+          </div> */}
         </section>
       </main>
     </div>

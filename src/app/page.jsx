@@ -1,6 +1,7 @@
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Link from "next/link";
+import Image from "next/image";
 import { FaProjectDiagram, FaComments, FaUserGraduate } from "react-icons/fa";
 
 export default function Home() {
@@ -28,7 +29,7 @@ export default function Home() {
           </div>
         </div>
         <div className="md:w-1/2 mt-10 md:mt-0 flex justify-center">
-          <img src="/hero-illustration.svg" alt="ProTrack Illustration" className="w-3/4" />
+          <img src="/logo.png" alt="ProTrack Illustration" className="w-1/4 rounded-2xl" />
         </div>
       </section>
 

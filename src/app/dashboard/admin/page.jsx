@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { FaHome, FaUsers, FaProjectDiagram, FaTasks, FaCog, FaChartPie, FaSignOutAlt } from "react-icons/fa";
+import Link from "next/link";
 
 export default function AdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -20,7 +21,7 @@ export default function AdminDashboard() {
           <a href="#" className="flex items-center space-x-3 p-3 rounded hover:bg-blue-700">
             <FaHome /> {sidebarOpen && <span>Dashboard</span>}
           </a>
-          <a href="#" className="flex items-center space-x-3 p-3 rounded hover:bg-blue-700">
+          <a href="/dashboard/admin/manage-users" className="flex items-center space-x-3 p-3 rounded hover:bg-blue-700">
             <FaUsers /> {sidebarOpen && <span>Manage Users</span>}
           </a>
           <a href="#" className="flex items-center space-x-3 p-3 rounded hover:bg-blue-700">
@@ -54,26 +55,43 @@ export default function AdminDashboard() {
           {/* User Management */}
           <div className="bg-white p-6 rounded-lg shadow">
             <h2 className="text-xl font-bold mb-4">Users</h2>
-            <p>Total Students: <span className="font-bold">120</span></p>
-            <p>Total Faculty: <span className="font-bold">15</span></p>
+            <p>Total Students: <span className="font-bold">70</span></p>
+            <p>Total Faculty: <span className="font-bold">10</span></p>
             <p>Admins: <span className="font-bold">3</span></p>
           </div>
 
           {/* Projects */}
           <div className="bg-white p-6 rounded-lg shadow">
             <h2 className="text-xl font-bold mb-4">Projects</h2>
-            <p>Ongoing: 45</p>
-            <p>Completed: 30</p>
+            <p>Ongoing: 24</p>
+            <p>Completed: 1</p>
             <p>Pending Approval: 5</p>
           </div>
 
           {/* Analytics */}
           <div className="bg-white p-6 rounded-lg shadow">
             <h2 className="text-xl font-bold mb-4">System Analytics</h2>
-            <p>Active Users Today: 85</p>
+            <p>Active Users Today: 45</p>
             <p>Submissions Uploaded: 12</p>
             <p>Feedbacks Given: 9</p>
           </div>
+
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h2 className="text-xl font-bold mb-4">Student Progress</h2>
+            <h2>student list</h2>
+            <h2>(group 1)</h2>
+            <button className=" text-zinc-600 mt-5 rounded-2xl cursor-pointer">all student ....</button>
+          </div>
+
+
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h2 className="text-xl font-bold mb-4">Faculty</h2>
+            <h2>Faculty list</h2>
+            <h2>(Faculty group assign)</h2>
+            <button className=" text-zinc-600 mt-5 rounded-2xl cursor-pointer">all Faculty ....</button>
+          </div>
+
+          
         </section>
       </main>
     </div>
