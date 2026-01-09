@@ -19,17 +19,31 @@ export async function POST(request) {
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return NextResponse.json({ error: "Invalid credentials" }, { status: 400 });
+            return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
         }
 
         // JWT
         const token = jwt.sign(
             { id: user._id, role: user.role },
             process.env.JWT_SECRET,
-            { expiresIn: "1h" }
+            { expiresIn: "7d" }
         );
 
-        return NextResponse.json({ token, role: user.role }, { status: 200 });
+        const response = NextResponse.json({
+            id: user._id,
+            name: user.name,
+            role: user.role,
+        });
+
+        response.cookies.set("token", token, {
+            httpOnly: true,
+            sameSite: "lax",
+            secure: process.env.NODE_ENV === "production",
+            path: "/",
+        });
+
+
+        return response;
     } catch (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
