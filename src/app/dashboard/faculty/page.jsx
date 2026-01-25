@@ -1,93 +1,176 @@
 "use client";
+
 import Link from "next/link";
-import { useState } from "react";
-import { FaHome, FaProjectDiagram, FaTasks, FaUsers, FaComments, FaChartBar, FaCog, FaSignOutAlt } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import {
+  FaHome,
+  FaUsers,
+  FaProjectDiagram,
+  FaComments,
+  FaSignOutAlt,
+} from "react-icons/fa";
 
 export default function FacultyDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [loading, setLoading] = useState(true);
+   const [user, setUser] = useState(null);
+
+  useEffect(() => {
+      fetch("/api/auth/me")
+        .then((res) => res.json())
+        .then((data) => setUser(data))
+        .catch(() => setUser(null));
+    }, []);
+  
+
+  const [stats, setStats] = useState({
+    students: 0,
+    projects: 0,
+    pendingFeedback: 0,
+  });
+
+  const [recentStudents, setRecentStudents] = useState([]);
+
+  useEffect(() => {
+    Promise.all([
+      fetch("/api/faculty/dashboard", { credentials: "include" }).then((r) =>
+        r.json()
+      ),
+      fetch("/api/faculty/my-students", { credentials: "include" }).then((r) =>
+        r.json()
+      ),
+    ])
+      .then(([dashboardData, studentsData]) => {
+        setStats({
+          students: dashboardData.totalStudents || 0,
+          projects: dashboardData.totalProjects || 0,
+          pendingFeedback: dashboardData.pendingFeedback || 0,
+        });
+
+        setRecentStudents(
+          Array.isArray(studentsData) ? studentsData.slice(0, 5) : []
+        );
+
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return <div className="p-6">Loading dashboard...</div>;
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <aside className={`bg-blue-900 text-white ${sidebarOpen ? "w-64" : "w-20"} transition-all duration-300 flex flex-col`}>
+      <aside
+        className={`bg-blue-900 text-white ${
+          sidebarOpen ? "w-64" : "w-20"
+        } transition-all duration-300 flex flex-col`}
+      >
         <div className="flex items-center justify-between p-4 font-bold text-xl">
           {sidebarOpen && "ProTrack"}
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="text-white">
+          <button onClick={() => setSidebarOpen(!sidebarOpen)}>
             {sidebarOpen ? "«" : "»"}
           </button>
         </div>
+
         <nav className="flex-1 px-2 space-y-2">
-          <a href="#" className="flex items-center space-x-3 p-3 rounded hover:bg-blue-700">
+          <Link
+            href="/dashboard/faculty"
+            className="flex items-center space-x-3 p-3 rounded hover:bg-blue-700"
+          >
             <FaHome /> {sidebarOpen && <span>Dashboard</span>}
-          </a>
-          <Link href="/dashboard/faculty/my-students" className="flex items-center space-x-3 p-3 rounded hover:bg-blue-700">
+          </Link>
+
+          <Link
+            href="/dashboard/faculty/my-students"
+            className="flex items-center space-x-3 p-3 rounded hover:bg-blue-700"
+          >
             <FaUsers /> {sidebarOpen && <span>My Students</span>}
           </Link>
-          <a href="#" className="flex items-center space-x-3 p-3 rounded hover:bg-blue-700">
+
+          <Link
+            href="/dashboard/faculty/projects"
+            className="flex items-center space-x-3 p-3 rounded hover:bg-blue-700"
+          >
             <FaProjectDiagram /> {sidebarOpen && <span>Projects</span>}
-          </a>
-          <a href="#" className="flex items-center space-x-3 p-3 rounded hover:bg-blue-700">
-            <FaTasks /> {sidebarOpen && <span>Tasks</span>}
-          </a>
-          <a href="#" className="flex items-center space-x-3 p-3 rounded hover:bg-blue-700">
+          </Link>
+
+          <Link
+            href="/dashboard/faculty/feedback"
+            className="flex items-center space-x-3 p-3 rounded hover:bg-blue-700"
+          >
             <FaComments /> {sidebarOpen && <span>Feedback</span>}
-          </a>
-          <a href="#" className="flex items-center space-x-3 p-3 rounded hover:bg-blue-700">
-            <FaChartBar /> {sidebarOpen && <span>Reports</span>}
-          </a>
-          <a href="#" className="flex items-center space-x-3 p-3 rounded hover:bg-blue-700">
-            <FaCog /> {sidebarOpen && <span>Settings</span>}
-          </a>
+          </Link>
+
+          <Link
+            href="/dashboard/faculty/submissions"
+            className="flex items-center space-x-3 p-3 rounded hover:bg-blue-700"
+          >
+            <FaComments /> {sidebarOpen && <span>Submissions</span>}
+          </Link>
         </nav>
+
         <div className="p-4 border-t border-blue-700">
-          <a href="/login" className="flex items-center space-x-3 p-2 rounded hover:bg-blue-700">
+          <Link
+            href="/login"
+            className="flex items-center space-x-3 p-2 rounded hover:bg-blue-700"
+          >
             <FaSignOutAlt /> {sidebarOpen && <span>Logout</span>}
-          </a>
+          </Link>
         </div>
       </aside>
 
-      {/* Main Content */}
+      {/* Main */}
       <main className="flex-1">
         {/* Header */}
         <header className="flex justify-between items-center bg-white shadow px-6 py-4">
-          <h1 className="text-2xl font-bold text-blue-900">Welcome, Faculty </h1>
-          <div className="flex items-center space-x-6">
-            <input type="text" placeholder="Search..." className="px-4 py-2 border rounded-lg hidden md:block" />
-            <img src="/defult.png" alt="profile" className="w-10 h-10 rounded-full cursor-pointer" />
-          </div>
+          <h1 className="text-2xl font-bold text-blue-900">
+            Welcome{user?.name ? `, ${user.name}` : ""}
+          </h1>
         </header>
 
-        {/* Dashboard */}
-        <section className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Student List */}
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-bold mb-4">My Students</h2>
-            <ul className="space-y-2">
-              <li className="p-3 border rounded hover:bg-blue-50">Deepak Ukkoji (G-11) - ProTrack</li>
-              <li className="p-3 border rounded hover:bg-blue-50">Swayam Shinde (G-12) - Web Development</li>
-              <li className="p-3 border rounded hover:bg-blue-50">Yash (G-13) - application Development</li>
-              <li className="p-3 border rounded hover:bg-blue-50">Gautam Patel (G-14) - Hotel Management</li>
-              <li className="p-3 border rounded hover:bg-blue-50">Ashawin Patel (G-15) - NEWS summary</li>
-              <li className="p-3 border rounded hover:bg-blue-50">Vishwa Patel (G-16) - Web Development</li>
-              <li className="p-3 border rounded hover:bg-blue-50">chirag (G-17) - Expanse Tracker</li>
-            </ul>
+        {/* Stats */}
+        <section className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white p-6 rounded shadow">
+            <h3 className="text-gray-600">Total Students</h3>
+            <p className="text-3xl font-bold">{stats.students}</p>
           </div>
 
-          {/* Feedback Tasks */}
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="font-bold mb-2 text-xl text-yellow-300 bg-black text-center p-2 rounded-2xl">Groupwise Data show</h3>
-            <h2 className="text-xl font-bold mb-4">Pending Feedback</h2>
-            <p>AI Project - Needs review</p>
-            <p>Database Project - Waiting for grading</p>
+          <div className="bg-white p-6 rounded shadow">
+            <h3 className="text-gray-600">Active Projects</h3>
+            <p className="text-3xl font-bold">{stats.projects}</p>
           </div>
 
-          {/* Reports */}
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="font-bold mb-2 text-xl text-yellow-300 bg-black text-center p-2 rounded-2xl">Groupwise Data show</h3>
-            <h2 className="text-xl font-bold mb-4">Reports Overview</h2>
-            <p>✔️ 8 Projects Supervised</p>
-            <p>📑 4 Feedbacks Given</p>
-            <p>📊 Avg Completion: 50%</p>
+          <div className="bg-white p-6 rounded shadow">
+            <h3 className="text-gray-600">Pending Feedback</h3>
+            <p className="text-3xl font-bold">{stats.pendingFeedback}</p>
+          </div>
+        </section>
+
+        {/* Recent Students */}
+        <section className="p-6">
+          <div className="bg-white p-6 rounded shadow">
+            <h2 className="text-xl font-bold mb-4">Recently Added Students</h2>
+
+            {recentStudents.length === 0 ? (
+              <p className="text-gray-500">No students yet</p>
+            ) : (
+              <ul className="space-y-3">
+                {recentStudents.map((s) => (
+                  <li
+                    key={s._id}
+                    className="p-3 border rounded hover:bg-gray-50"
+                  >
+                    <div className="font-semibold">{s.name}</div>
+                    <div className="text-sm text-gray-600">
+                      {s.project}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </section>
       </main>

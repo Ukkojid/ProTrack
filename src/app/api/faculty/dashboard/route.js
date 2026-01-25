@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Project from "@/models/Project";
+import Feedback from "@/models/Feedback";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
+
 export async function GET() {
   await connectDB();
 
@@ -22,8 +24,28 @@ export async function GET() {
 
   const facultyId = decoded.id;
 
-  const projects = await Project.find({ faculty: facultyId })
-    .populate("students", "name email");
+  // 🔹 Total projects under this faculty
+  const projects = await Project.find({ faculty: facultyId });
 
-  return NextResponse.json(projects);
+  const totalProjects = projects.length;
+
+  // 🔹 Unique students count
+  const studentSet = new Set();
+  projects.forEach((p) => {
+    p.students.forEach((s) => studentSet.add(s.toString()));
+  });
+
+  const totalStudents = studentSet.size;
+
+  // 🔹 Pending feedback count
+  const pendingFeedback = await Feedback.countDocuments({
+    faculty: facultyId,
+    status: "pending",
+  });
+
+  return NextResponse.json({
+    totalStudents,
+    totalProjects,
+    pendingFeedback,
+  });
 }

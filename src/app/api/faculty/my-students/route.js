@@ -3,6 +3,7 @@ import { connectDB } from "@/lib/db";
 import Project from "@/models/Project";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
+
 export async function GET() {
   await connectDB();
 
@@ -23,7 +24,22 @@ export async function GET() {
   const facultyId = decoded.id;
 
   const projects = await Project.find({ faculty: facultyId })
-    .populate("students", "name email");
+    .populate("students", "name email")
+    .select("title students");
 
-  return NextResponse.json(projects);
+  // flatten students with project info
+  const students = [];
+
+  projects.forEach((project) => {
+    project.students.forEach((student) => {
+      students.push({
+        _id: student._id,
+        name: student.name,
+        email: student.email,
+        project: project.title,
+      });
+    });
+  });
+
+  return NextResponse.json(students);
 }

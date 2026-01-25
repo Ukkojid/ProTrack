@@ -8,7 +8,7 @@ import User from "@/models/User";
 export default async function StudentDashboardPage() {
   await connectDB();
 
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
   if (!token) {

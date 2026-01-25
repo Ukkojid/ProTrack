@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
-import Project from "@/models/Project";
+import Feedback from "@/models/Feedback";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
+
 export async function GET() {
   await connectDB();
 
@@ -13,17 +14,12 @@ export async function GET() {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
-  let decoded;
-  try {
-    decoded = jwt.verify(token, process.env.JWT_SECRET);
-  } catch {
-    return NextResponse.json({ message: "Invalid token" }, { status: 401 });
-  }
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-  const facultyId = decoded.id;
+  const feedbacks = await Feedback.find({
+    students: decoded.id,
+  }).populate("faculty", "name email");
 
-  const projects = await Project.find({ faculty: facultyId })
-    .populate("students", "name email");
-
-  return NextResponse.json(projects);
+  return NextResponse.json(feedbacks);
 }
+

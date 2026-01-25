@@ -4,11 +4,12 @@ const projectSchema = new mongoose.Schema({
     title: { type: String, required: true },
     description: String,
 
-    student: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
-    },
+    students: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }
+    ],
 
     faculty: {
         type: mongoose.Schema.Types.ObjectId,
