@@ -1,25 +1,33 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
-import Feedback from "@/models/Feedback";
-import jwt from "jsonwebtoken";
-import { cookies } from "next/headers";
+import Submission from "@/models/Submission";
+import SubmissionFeedback from "@/models/SubmissionFeedback";
+import { checkRole } from "@/lib/checkRole";
 
 export async function GET() {
+  const { error, decoded } = await checkRole(["student"]);
+  if (error) return error;
+
   await connectDB();
 
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
+  // 1️⃣ student ke saare submissions
+  const submissions = await Submission.find({ student: decoded.id }).select("_id");
 
-  if (!token) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
+  const submissionIds = submissions.map((s) => s._id);
 
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-  const feedbacks = await Feedback.find({
-    students: decoded.id,
-  }).populate("faculty", "name email");
+  // 2️⃣ un submissions ke feedbacks
+  const feedbacks = await SubmissionFeedback.find({
+    submission: { $in: submissionIds },
+  })
+    .populate({
+      path: "submission",
+      populate: {
+        path: "project",
+        select: "title",
+      },
+    })
+    .populate("faculty", "name email")
+    .sort({ createdAt: -1 });
 
   return NextResponse.json(feedbacks);
 }
-

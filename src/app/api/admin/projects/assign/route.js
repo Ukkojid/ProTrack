@@ -4,8 +4,11 @@ import Project from "@/models/Project";
 import { checkRole } from "@/lib/checkRole";
 
 export async function PATCH(req) {
-    const { error, decoded } = await checkRole(["faculty"]);
-  if (error) return error;
+    const result = await checkRole(["student"]); // ya faculty / admin
+if (result.error) return result.error;
+
+const { decoded } = result;
+
     
     await connectDB();
 

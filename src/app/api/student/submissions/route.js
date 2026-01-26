@@ -4,8 +4,12 @@ import Submission from "@/models/Submission";
 import { checkRole } from "@/lib/checkRole";
 
 export async function POST(req) {
-  const decoded = await checkRole(["student"]);
-  if (decoded instanceof Response) return decoded;
+  const result = await checkRole(["student"]); // ya faculty / admin
+if (result.error) return result.error;
+
+const { decoded } = result;
+
+
 
   await connectDB();
 

@@ -1,36 +1,34 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
-import jwt from "jsonwebtoken";
-import { cookies } from "next/headers";
-import { checkRole } from "@/lib/checkRole";
 import Submission from "@/models/Submission";
-import Message from "@/models/Message";
-
+import Project from "@/models/Project";
+import { checkRole } from "@/lib/checkRole";
 
 export async function GET() {
-    const roleError = checkRole(null, ["faculty"]);
-    if(roleError) return roleError;
+  const result = await checkRole(["faculty"]); // ya faculty / admin
+if (result.error) return result.error;
 
-    await connectDB();
+const { decoded } = result;
 
-    const cookieStore = await cookies();
-    const token = cookieStore.get("token")?.value;
+  await connectDB();
 
-    if(!token) {
-        return NextResponse.json({ message: "Unauthorized"}, { status: 401});
-    }
+  const facultyId = decoded.id;
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const facultyId = decoded.id;
+  /**
+   * Step 1: faculty ke projects nikalo
+   */
+  const projects = await Project.find({ faculty: facultyId }).select("_id");
+  const projectIds = projects.map((p) => p._id);
 
-    const submission = await Submission.find()
+  /**
+   * Step 2: un projects ke submissions nikalo
+   */
+  const submissions = await Submission.find({
+    project: { $in: projectIds },
+  })
     .populate("student", "name email")
-    .populate("project", "title faculty");
+    .populate("project", "title")
+    .sort({ createdAt: -1 });
 
-
-    const filtered = submissions.filter(
-        (s) => s.project.faculty.toString() === facultyId
-    );
-
-    return NextResponse.json(filtered);
+  return NextResponse.json(submissions);
 }

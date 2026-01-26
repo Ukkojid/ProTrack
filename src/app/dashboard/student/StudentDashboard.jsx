@@ -73,18 +73,17 @@ export default function StudentDashboard() {
 
           <SidebarItem icon={<FaTasks />} label="Tasks" open={sidebarOpen} />
           <Link href="/dashboard/student/submissions">
-          <SidebarItem
-            icon={<FaUpload />}
-            label="Submissions"
-            open={sidebarOpen}
-          />
+            <SidebarItem
+              icon={<FaUpload />}
+              label="Submissions"
+              open={sidebarOpen}
+            />
           </Link>
 
-          <SidebarItem
-            icon={<FaComments />}
-            label="Feedback"
-            open={sidebarOpen}
-          />
+          <Link href="/dashboard/student/feedback">
+            <SidebarItem icon={<FaComments />} label="Feedback" open={sidebarOpen}/>
+          </Link>
+
           <SidebarItem icon={<FaUser />} label="Profile" open={sidebarOpen} />
           <SidebarItem icon={<FaCog />} label="Settings" open={sidebarOpen} />
         </nav>

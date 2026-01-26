@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Project from "@/models/Project";
-import Feedback from "@/models/Feedback";
+import SubmissionFeedback from "@/models/SubmissionFeedback";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 
@@ -38,7 +38,7 @@ export async function GET() {
   const totalStudents = studentSet.size;
 
   // 🔹 Pending feedback count
-  const pendingFeedback = await Feedback.countDocuments({
+  const pendingFeedback = await SubmissionFeedback.countDocuments({
     faculty: facultyId,
     status: "pending",
   });

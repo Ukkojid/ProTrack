@@ -1,33 +1,50 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
-import Feedback from "@/models/Feedback";
-import jwt from "jsonwebtoken";
-import { cookies } from "next/headers";
+import SubmissionFeedback from "@/models/SubmissionFeedback";
 import { checkRole } from "@/lib/checkRole";
 
+export async function GET() {
+  await connectDB();
+
+  const { error, decoded } = await checkRole(["faculty"]);
+  if (error) return error;
+
+  const feedbacks = await SubmissionFeedback.find({ faculty: decoded.id })
+    .populate({
+      path: "submission",
+      populate: {
+        path: "project",
+        select: "title",
+      },
+    })
+    .populate("faculty", "name email")
+    .sort({ createdAt: -1 });
+
+  return NextResponse.json(feedbacks);
+}
+
 export async function POST(req) {
-    const roleError = checkRole(req, ["faculty"]);
-    if (roleError) return roleError;
-    
+  await connectDB();
 
-    await connectDB();
+  const { error, decoded } = await checkRole(["faculty"]);
+  if (error) return error;
 
-    const cookieStore = await cookies();
-    const token = cookieStore.get("token")?.value;
-    if (!token) {
-        return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
+  const body = await req.json();
+  const { submissionId, message, score } = body;
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const facultyId = decoded.id;
+  if (!submissionId || !message) {
+    return NextResponse.json(
+      { message: "submissionId and message required" },
+      { status: 400 }
+    );
+  }
 
-    const body = await req.json();
+  const feedback = await SubmissionFeedback.create({
+    submission: submissionId,
+    faculty: decoded.id,
+    message,
+    score,
+  });
 
-    const feedback = await Feedback.create({
-        project: body.projectId,
-        faculty: facultyId,
-        message: body.message
-    });
-
-    return NextResponse.json(feedback, { status: 201 });
+  return NextResponse.json(feedback, { status: 201 });
 }
