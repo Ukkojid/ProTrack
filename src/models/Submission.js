@@ -1,5 +1,24 @@
 import mongoose from "mongoose";
 
+const fileSchema = new mongoose.Schema({
+    type: {
+        type: String,
+        enum: ["document", "image", "video"],
+        required: true,
+    },
+    fileName: {
+        type: String,
+    },
+    url: {
+        type: String,
+        required: true,
+    },
+    uploadedAt: {
+        type: Date,
+        default: Date.now,
+    },
+});
+
 const submissionSchema = new mongoose.Schema(
     {
         student: {
@@ -27,13 +46,11 @@ const submissionSchema = new mongoose.Schema(
         githubLink: {
             type: String,
         },
-        
-        videoUrl: {
-            type: String,
-        },
 
-        fileUrl: {
-            type: String,
+        // NEW: multiple files (pdf, image, video)
+        files: {
+            type: [fileSchema],
+            default: [],
         },
 
         status: {
@@ -41,9 +58,9 @@ const submissionSchema = new mongoose.Schema(
             enum: ["submitted", "reviewed"],
             default: "submitted",
         },
-    }, 
+    },
     { timestamps: true }
 );
 
-
-export default mongoose.models.Submission || mongoose.model("Submission", submissionSchema);
+export default mongoose.models.Submission ||
+    mongoose.model("Submission", submissionSchema);

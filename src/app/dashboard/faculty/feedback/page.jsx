@@ -42,7 +42,7 @@ export default function FacultyFeedbackPage() {
             <p className="mt-2 text-gray-800">{fb.message}</p>
 
             <p className="mt-2 text-sm text-gray-500">
-              {new Date(fb.createdAt).toLocaleDateString()}
+              {new Date(fb.createdAt).toLocaleDateString("en-GB")}
             </p>
           </div>
         ))}

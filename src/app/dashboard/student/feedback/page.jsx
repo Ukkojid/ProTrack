@@ -46,7 +46,7 @@ export default function StudentFeedbackPage() {
           <p className="mt-2">{f.message}</p>
 
           <p className="text-sm text-gray-500 mt-2">
-            {new Date(f.createdAt).toLocaleString()}
+            {new Date(f.createdAt).toLocaleDateString("en-GB")}
           </p>
         </div>
       ))}

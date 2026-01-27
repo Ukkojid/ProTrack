@@ -16,7 +16,7 @@ export default function FacultySubmissionsPage() {
       .then((data) => {
         // 🛡️ safety: remove duplicates by _id
         const unique = Array.from(
-          new Map(data.map((i) => [i._id, i])).values()
+          new Map(data.map((i) => [i._id, i])).values(),
         );
         setSubmissions(unique);
         setLoading(false);
@@ -52,9 +52,15 @@ export default function FacultySubmissionsPage() {
 
       {submissions.map((s) => (
         <div key={s._id} className="bg-white p-4 mb-4 rounded shadow">
-          <p><b>Student:</b> {s.student?.name}</p>
-          <p><b>Project:</b> {s.project?.title}</p>
-          <p><b>Week:</b> {s.week}</p>
+          <p>
+            <b>Student:</b> {s.student?.name}
+          </p>
+          <p>
+            <b>Project:</b> {s.project?.title}
+          </p>
+          <p>
+            <b>Week:</b> {s.week}
+          </p>
           <p>{s.description}</p>
 
           <div className="flex gap-4 mt-2">
@@ -63,10 +69,34 @@ export default function FacultySubmissionsPage() {
                 GitHub
               </a>
             )}
-            {s.videoUrl && (
-              <a href={s.videoUrl} target="_blank" className="text-green-600">
-                Watch Video
-              </a>
+            {s.files && s.files.length > 0 && (
+              <div className="mt-3 space-y-2">
+                {s.files.map((file, index) => (
+                  <div key={index}>
+                    {file.type === "image" && (
+                      <img
+                        src={file.url}
+                        alt={file.fileName}
+                        className="max-w-xs rounded"
+                      />
+                    )}
+
+                    {file.type === "video" && (
+                      <video src={file.url} controls className="max-w-md" />
+                    )}
+
+                    {file.type === "document" && (
+                      <a
+                        href={file.url}
+                        target="_blank"
+                        className="text-blue-600 underline"
+                      >
+                        {file.fileName || "View Document"}
+                      </a>
+                    )}
+                  </div>
+                ))}
+              </div>
             )}
           </div>
 

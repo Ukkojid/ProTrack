@@ -9,12 +9,11 @@ export default function StudentSubmissionsPage() {
   const [week, setWeek] = useState("");
   const [description, setDescription] = useState("");
   const [githubLink, setGithubLink] = useState("");
-  const [videoUrl, setVideoUrl] = useState("");
+  const [files, setFiles] = useState([]);
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  // 🔹 load student's projects
   useEffect(() => {
     fetch("/api/projects/my", { credentials: "include" })
       .then((res) => res.json())
@@ -24,28 +23,25 @@ export default function StudentSubmissionsPage() {
   const submitWork = async () => {
     setMessage("");
 
-    if (!projectId) {
-      return setMessage("Please select a project");
-    }
-    if (!week) {
-      return setMessage("Week is required");
-    }
-    if (!description.trim()) {
-      return setMessage("Description is required");
+    if (!projectId || !week || !description.trim()) {
+      return setMessage("All required fields must be filled");
     }
 
     setLoading(true);
 
+    const formData = new FormData();
+    formData.append("projectId", projectId);
+    formData.append("week", week);
+    formData.append("description", description);
+    formData.append("githubLink", githubLink);
+
+    files.forEach((file) => {
+      formData.append("files", file);
+    });
+
     const res = await fetch("/api/student/submissions", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        projectId,          // ✅ REAL ObjectId
-        week,
-        description,
-        githubLink,
-        videoUrl,
-      }),
+      body: formData,
     });
 
     const data = await res.json();
@@ -57,7 +53,7 @@ export default function StudentSubmissionsPage() {
       setWeek("");
       setDescription("");
       setGithubLink("");
-      setVideoUrl("");
+      setFiles([]);
     }
 
     setLoading(false);
@@ -68,7 +64,6 @@ export default function StudentSubmissionsPage() {
       <h1 className="text-2xl font-bold mb-6">Weekly Submission</h1>
 
       <div className="space-y-4">
-        {/* Project select */}
         <select
           value={projectId}
           onChange={(e) => setProjectId(e.target.value)}
@@ -98,11 +93,10 @@ export default function StudentSubmissionsPage() {
         />
 
         <input
-          type="text"
-          placeholder="Video Recording Link (Drive / Cloudinary)"
-          value={videoUrl}
-          onChange={(e) => setVideoUrl(e.target.value)}
-          className="w-full p-2 border rounded"
+          type="file"
+          multiple
+          onChange={(e) => setFiles(Array.from(e.target.files))}
+          className="w-full"
         />
 
         <input

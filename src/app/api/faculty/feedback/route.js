@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import SubmissionFeedback from "@/models/SubmissionFeedback";
 import { checkRole } from "@/lib/checkRole";
+import Submission from "@/models/Submission";
 
 export async function GET() {
   await connectDB();

@@ -15,7 +15,7 @@ const { decoded } = result;
   const facultyId = decoded.id;
 
   /**
-   * Step 1: faculty ke projects nikalo
+   * Step 1: faculty ke projects nikal ta he
    */
   const projects = await Project.find({ faculty: facultyId }).select("_id");
   const projectIds = projects.map((p) => p._id);
