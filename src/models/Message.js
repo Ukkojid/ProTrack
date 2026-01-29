@@ -12,14 +12,14 @@ const MessageSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    text: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+    text: String,
+
+    fileUrl: String,
+    fileType: String, // image, pdf, video
   },
   { timestamps: true }
 );
+
 
 export default mongoose.models.Message ||
   mongoose.model("Message", MessageSchema);
