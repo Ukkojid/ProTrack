@@ -6,12 +6,9 @@ export default function StudentTable({ search }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/faculty/my-students", {
-      credentials: "include",
-    })
+    fetch("/api/faculty/my-students", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
-        // ✅ force array safety
         setStudents(Array.isArray(data) ? data : []);
         setLoading(false);
       })
@@ -21,39 +18,45 @@ export default function StudentTable({ search }) {
       });
   }, []);
 
-  if (loading) {
-    return <p className="p-4">Loading students...</p>;
-  }
+  if (loading) return <p className="p-4">Loading students...</p>;
 
   const filtered = students.filter(
     (s) =>
       s.name?.toLowerCase().includes(search.toLowerCase()) ||
-      s.project?.toLowerCase().includes(search.toLowerCase())
+      s.project?.toLowerCase().includes(search.toLowerCase()) ||
+      s.email?.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-x-auto">
+    <div className="bg-white rounded-xl shadow overflow-x-auto">
       <table className="w-full border-collapse">
         <thead className="bg-gray-200 text-gray-700">
           <tr>
-            <th className="px-4 py-2 text-left">Name</th>
-            <th className="px-4 py-2 text-left">Email</th>
-            <th className="px-4 py-2 text-left">Project</th>
+            <th className="px-4 py-3 text-left">Name</th>
+            <th className="px-4 py-3 text-left">Email</th>
+            <th className="px-4 py-3 text-left">Project</th>
+            <th className="px-4 py-3 text-left">Pending Feedback</th>
           </tr>
         </thead>
-
         <tbody>
           {filtered.length > 0 ? (
-            filtered.map((student) => (
-              <tr key={student._id} className="border-t hover:bg-gray-50">
-                <td className="px-4 py-2">{student.name}</td>
-                <td className="px-4 py-2">{student.email}</td>
-                <td className="px-4 py-2">{student.project}</td>
+            filtered.map((s) => (
+              <tr key={s._id} className="border-t hover:bg-gray-50 transition">
+                <td className="px-4 py-2">{s.name}</td>
+                <td className="px-4 py-2">{s.email}</td>
+                <td className="px-4 py-2">{s.project}</td>
+                <td className="px-4 py-2">
+                  {s.pendingFeedback ? (
+                    <span className="text-orange-600 font-semibold">Yes</span>
+                  ) : (
+                    <span className="text-green-600 font-semibold">No</span>
+                  )}
+                </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="3" className="text-center py-6 text-gray-500">
+              <td colSpan="4" className="text-center py-6 text-gray-500">
                 No students found
               </td>
             </tr>

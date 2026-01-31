@@ -12,8 +12,10 @@ export async function GET(req, context) {
   const { projectId } = await context.params;
 
   const project = await Project.findById(projectId)
-    .populate("students", "name")
-    .populate("faculty", "name");
+    .populate("students", "name email")
+    .populate("faculty", "name email");
+
+
 
   if (!project) {
     return NextResponse.json(

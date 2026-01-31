@@ -10,12 +10,12 @@ export async function GET() {
 
   await connectDB();
 
-  // 1️⃣ student ke saare submissions
+  //  student ke saare submissions
   const submissions = await Submission.find({ student: decoded.id }).select("_id");
 
   const submissionIds = submissions.map((s) => s._id);
 
-  // 2️⃣ un submissions ke feedbacks
+  //  un submissions ke feedbacks
   const feedbacks = await SubmissionFeedback.find({
     submission: { $in: submissionIds },
   })
