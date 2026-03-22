@@ -13,18 +13,29 @@ export default function FacultyDashboardPage() {
 
   useEffect(() => {
     Promise.all([
-      fetch("/api/faculty/dashboard", { credentials: "include" }).then((r) => r.json()),
-      fetch("/api/faculty/my-students", { credentials: "include" }).then((r) => r.json()),
+      fetch("/api/faculty/dashboard", { credentials: "include" }).then((r) =>
+        r.json(),
+      ),
+      fetch("/api/faculty/my-students", { credentials: "include" }).then((r) =>
+        r.json(),
+      ),
     ])
-      .then(([dashboardData, studentsData]) => {
-        setStats({
-          students: dashboardData.totalStudents || 0,
-          projects: dashboardData.totalProjects || 0,
-          pendingFeedback: dashboardData.pendingFeedback || 0,
-        });
-        setRecentStudents(Array.isArray(studentsData) ? studentsData.slice(0, 5) : []);
-        setLoading(false);
-      })
+      .then(([dashboardData, projectsData]) => {
+  setStats({
+    students: dashboardData.totalStudents || 0,
+    projects: dashboardData.totalProjects || 0,
+    pendingFeedback: dashboardData.pendingFeedback || 0,
+  });
+
+  // Directly store projects (not flatten)
+  setRecentStudents(
+    Array.isArray(projectsData) ? projectsData.slice(0, 5) : []
+  );
+
+  setLoading(false);
+})
+
+
       .catch(() => setLoading(false));
   }, []);
 
@@ -40,21 +51,47 @@ export default function FacultyDashboardPage() {
       </div>
 
       {/* Recent Students */}
-      <div className="bg-white p-6 rounded-xl shadow-md">
-        <h2 className="text-xl font-bold mb-4">Recently Added Students</h2>
-        {recentStudents.length === 0 ? (
-          <p className="text-gray-500">No students yet</p>
-        ) : (
-          <ul className="space-y-3">
-            {recentStudents.map((s) => (
-              <li key={s._id} className="p-3 border rounded hover:bg-gray-50">
-                <div className="font-semibold">{s.name}</div>
-                <div className="text-sm text-gray-600">{s.project}</div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+     <div className="bg-white p-6 rounded-xl shadow-md">
+  <h2 className="text-xl font-bold mb-4">Projects & Students</h2>
+
+  {recentStudents.length === 0 ? (
+    <p className="text-gray-500">No projects yet</p>
+  ) : (
+    <div className="space-y-5">
+      {recentStudents.map((project) => (
+        <div
+          key={project._id}
+          className="border rounded-lg p-4 hover:shadow-md transition"
+        >
+          {/* Project Title */}
+          <h3 className="font-semibold text-lg text-gray-800 mb-2">
+            {project.title}
+          </h3>
+
+          {/* Students List */}
+          {project.students && project.students.length > 0 ? (
+            <ul className="space-y-2">
+              {project.students.slice(0, 3).map((student) => (
+                <li
+                  key={student._id}
+                  className="flex justify-between items-center bg-gray-50 px-3 py-2 rounded"
+                >
+                  <span className="font-medium">{student.name}</span>
+                  <span className="text-sm text-gray-500">
+                    {student.email}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-gray-500">No students assigned</p>
+          )}
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
     </div>
   );
 }

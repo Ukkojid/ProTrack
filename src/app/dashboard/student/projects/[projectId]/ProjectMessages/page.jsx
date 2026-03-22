@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 
 export default function ProjectMessages() {
-  const { projectId } = useParams(); // ✅ yaha se milega
+  const { projectId } = useParams(); 
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
   const [file, setFile] = useState(null);
@@ -30,7 +30,7 @@ export default function ProjectMessages() {
   useEffect(() => {
     if (!projectId) return;
     loadMessages();
-    const interval = setInterval(loadMessages, 2000);
+    const interval = setInterval(loadMessages, 3000);
     return () => clearInterval(interval);
   }, [projectId]);
 
@@ -68,7 +68,7 @@ export default function ProjectMessages() {
             <div key={m._id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
               <div className={`max-w-[70%] px-3 py-2 rounded-lg text-sm ${isMe ? "bg-green-200" : "bg-white border"}`}>
                 
-                {/* 🔥 sender name ab dono side pe */}
+                
                 <div className="text-xs font-semibold text-gray-600 mb-1">
                   {isMe ? "You" : m.sender.name}
                 </div>
@@ -98,7 +98,7 @@ export default function ProjectMessages() {
           value={text}
           onChange={e => setText(e.target.value)}
           onKeyDown={(e) => {
-            if(e.key === "Enter" && !e.shiftkey) {
+            if(e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
             }

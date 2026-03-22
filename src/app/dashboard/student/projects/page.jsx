@@ -27,7 +27,7 @@ export default function StudentProjectsPage() {
 
   return (
     <div className="p-6">
-      {/* Page header */}
+    
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl font-semibold text-gray-800">
@@ -46,14 +46,14 @@ export default function StudentProjectsPage() {
         </Link>
       </div>
 
-      {/* Empty state */}
+
       {projects.length === 0 && (
         <div className="bg-white rounded-lg shadow p-10 text-center text-gray-500">
           No projects created yet.
         </div>
       )}
 
-      {/* Projects table-style list */}
+ 
       {projects.length > 0 && (
         <div className="bg-white rounded-xl shadow overflow-hidden">
           <table className="w-full">

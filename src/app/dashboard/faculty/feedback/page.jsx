@@ -34,8 +34,8 @@ export default function FacultyFeedbackPage() {
               className="bg-white p-4 rounded-xl shadow hover:shadow-lg transition"
             >
               
-                <p className="font-semibold text-gray-800 mb-2">Project: 
-                  {fb.project?.title}
+                <p className="font-semibold text-gray-800 mb-2">Project:<span> </span>
+                   {fb.submission?.project?.title}
                 </p>
             
 

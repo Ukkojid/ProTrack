@@ -11,19 +11,27 @@ import {
   FaCog,
   FaBell,
   FaSignOutAlt,
+  FaStream,
 } from "react-icons/fa";
 
 export default function StudentLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [user, setUser] = useState(null);
+  const [studentId, setstudentId] = useState("");
 
+  // Fetch logged-in student
   useEffect(() => {
     fetch("/api/auth/me")
-      .then(res => res.json())
-      .then(data => setUser(data))
+      .then((res) => res.json())
+      .then((data) => setUser(data))
       .catch(() => setUser(null));
   }, []);
 
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((res) => res.json())
+      .then((data) => setstudentId(data._id));
+  }, []);
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
@@ -40,12 +48,58 @@ export default function StudentLayout({ children }) {
         </div>
 
         <nav className="flex-1 px-2 space-y-1">
-          <NavItem href="/dashboard/student" icon={<FaHome />} label="Dashboard" open={sidebarOpen} />
-          <NavItem href="/dashboard/student/projects" icon={<FaProjectDiagram />} label="Projects" open={sidebarOpen} />
-          <NavItem href="/dashboard/student/submissions" icon={<FaUpload />} label="Submissions" open={sidebarOpen} />
-          <NavItem href="/dashboard/student/feedback" icon={<FaComments />} label="Feedback" open={sidebarOpen} />
-          <NavItem href="/dashboard/student/profile" icon={<FaUser />} label="Profile" open={sidebarOpen} />
-          <NavItem href="/dashboard/student/settings" icon={<FaCog />} label="Settings" open={sidebarOpen} />
+          <NavItem
+            href="/dashboard/student"
+            icon={<FaHome />}
+            label="Dashboard"
+            open={sidebarOpen}
+          />
+          <NavItem
+            href="/dashboard/student/projects"
+            icon={<FaProjectDiagram />}
+            label="Projects"
+            open={sidebarOpen}
+          />
+          <NavItem
+            href="/dashboard/student/submissions"
+            icon={<FaUpload />}
+            label="Submissions"
+            open={sidebarOpen}
+          />
+          <NavItem
+            href="/dashboard/student/feedback"
+            icon={<FaComments />}
+            label="Feedback"
+            open={sidebarOpen}
+          />
+          <NavItem
+            href="/dashboard/student/profile"
+            icon={<FaUser />}
+            label="Profile"
+            open={sidebarOpen}
+          />
+          <NavItem
+            href="/dashboard/student/settings"
+            icon={<FaCog />}
+            label="Settings"
+            open={sidebarOpen}
+          />
+          <NavItem
+            href="/dashboard/student/feed"
+            icon={<FaStream />}
+            label="Feed"
+            open={sidebarOpen}
+          />
+
+          {/* Page link only if user is loaded */}
+          {user && (
+            <NavItem
+              href={`/dashboard/student/profile/${studentId}`}
+              icon={<FaUser />}
+              label="Page"
+              open={sidebarOpen}
+            />
+          )}
         </nav>
 
         <div className="p-4 border-t border-blue-800">
@@ -86,9 +140,7 @@ export default function StudentLayout({ children }) {
         </header>
 
         {/* Page content */}
-        <main className="flex-1">
-          {children}
-        </main>
+        <main className="flex-1">{children}</main>
       </div>
     </div>
   );

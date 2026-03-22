@@ -3,9 +3,8 @@ import { connectDB } from "@/lib/db";
 import Project from "@/models/Project";
 import Message from "@/models/Message";
 import { checkRole } from "@/lib/checkRole";
-import cloudinary from "@/lib/cloudinary"; // ⚠️ tumhare project me already hoga
+import cloudinary from "@/lib/cloudinary"; 
 
-// ✅ GET: project ke messages lao
 export async function GET(req, context) {
   await connectDB();
 
@@ -34,7 +33,7 @@ export async function GET(req, context) {
   return NextResponse.json(messages);
 }
 
-// ✅ POST: text + file/image
+
 export async function POST(req, context) {
   await connectDB();
 

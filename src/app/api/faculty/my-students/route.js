@@ -1,3 +1,49 @@
+// import { NextResponse } from "next/server";
+// import { connectDB } from "@/lib/db";
+// import Project from "@/models/Project";
+// import jwt from "jsonwebtoken";
+// import { cookies } from "next/headers";
+
+// export async function GET() {
+//   await connectDB();
+
+//   const cookieStore = await cookies();
+//   const token = cookieStore.get("token")?.value;
+
+//   if (!token) {
+//     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+//   }
+
+//   let decoded;
+//   try {
+//     decoded = jwt.verify(token, process.env.JWT_SECRET);
+//   } catch {
+//     return NextResponse.json({ message: "Invalid token" }, { status: 401 });
+//   }
+
+//   const facultyId = decoded.id;
+
+//   const projects = await Project.find({ faculty: facultyId })
+//     .populate("students", "name email")
+//     .select("title students");
+
+//   // flatten students with project info
+//   const students = [];
+
+//   projects.forEach((project) => {
+//     project.students.forEach((student) => {
+//       students.push({
+//         _id: student._id,
+//         name: student.name,
+//         email: student.email,
+//         project: project.title,
+//       });
+//     });
+//   });
+
+//   return NextResponse.json(students);
+// }
+
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Project from "@/models/Project";
@@ -25,21 +71,7 @@ export async function GET() {
 
   const projects = await Project.find({ faculty: facultyId })
     .populate("students", "name email")
-    .select("title students");
+    .select("title students status");
 
-  // flatten students with project info
-  const students = [];
-
-  projects.forEach((project) => {
-    project.students.forEach((student) => {
-      students.push({
-        _id: student._id,
-        name: student.name,
-        email: student.email,
-        project: project.title,
-      });
-    });
-  });
-
-  return NextResponse.json(students);
+  return NextResponse.json(projects);
 }

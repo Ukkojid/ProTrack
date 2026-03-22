@@ -51,6 +51,28 @@ export async function POST(req) {
 }
 
 
+export async function GET(req) {
+  await connectDB();
+
+  const { searchParams } = new URL(req.url);
+  const studentId = searchParams.get("studentId");
+
+  let filter = {};
+
+  if (studentId) {
+    filter = {
+      $or: [
+        { studentId },
+        { teamMembers: studentId }
+      ]
+    };
+  }
+
+  const projects = await Project.find(filter).sort({ createdAt: -1 });
+
+  return NextResponse.json(projects);
+}
+
 // export async function POST(req) {
 //   await connectDB();
 

@@ -33,7 +33,7 @@ export default function StudentDashboard() {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Welcome */}
+    
       <div>
         <h1 className="text-2xl font-semibold text-gray-800">
           Welcome{user?.name ? `, ${user.name}` : ""}
@@ -43,16 +43,16 @@ export default function StudentDashboard() {
         </p>
       </div>
 
-      {/* Stats */}
+      
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <StatCard title="Total Projects" value={projects.length} />
         <StatCard title="Feedback Received" value={feedbacks.length} />
         <StatCard title="Pending Submissions" value="0" />
       </div>
 
-      {/* Main content */}
+     
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Projects */}
+      
         <div className="bg-white rounded-xl shadow p-6 lg:col-span-2">
           <h2 className="text-lg font-semibold mb-4">My Projects</h2>
 

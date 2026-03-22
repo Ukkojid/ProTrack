@@ -49,7 +49,7 @@ export default function ProjectDetailsPage() {
         />
         <InfoCard
           label="Created On"
-          value={new Date(project.createdAt).toLocaleDateString()}
+          value={new Date(project.createdAt).toLocaleDateString("en-GB")}
         />
       </div>
 
@@ -63,7 +63,7 @@ export default function ProjectDetailsPage() {
         </p>
       </div>
 
-      {/* Extra sections */}
+      
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Team Members */}
         <div className="bg-white rounded-xl shadow p-6">

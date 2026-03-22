@@ -36,7 +36,7 @@ export default function FacultyLayout({ children }) {
           </button>
         </div>
 
-        <nav className="flex-1 px-2 space-y-2">
+        <nav className="flex-1 px-2 space-y-2 ">
           <SidebarLink href="/dashboard/faculty" icon={<FaHome />} label="Dashboard" open={sidebarOpen} />
           <SidebarLink href="/dashboard/faculty/my-students" icon={<FaUsers />} label="My Students" open={sidebarOpen} />
           <SidebarLink href="/dashboard/faculty/projects" icon={<FaProjectDiagram />} label="Projects" open={sidebarOpen} />

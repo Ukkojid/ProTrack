@@ -75,7 +75,6 @@ export default function CreateProject() {
         </div>
       )}
 
-      {/* Project title */}
       <div className="mb-5">
         <label className="block text-sm font-medium mb-1">
           Project Title
@@ -88,7 +87,6 @@ export default function CreateProject() {
         />
       </div>
 
-      {/* Students dropdown */}
       <div className="mb-5 relative">
         <label className="block text-sm font-medium mb-1">
           Group Members (2 students + you)
