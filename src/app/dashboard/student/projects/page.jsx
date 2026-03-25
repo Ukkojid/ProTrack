@@ -9,8 +9,8 @@ export default function StudentProjectsPage() {
 
   useEffect(() => {
     fetch("/api/projects/my", { credentials: "include" })
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setProjects(data || []);
         setLoading(false);
       })
@@ -19,76 +19,78 @@ export default function StudentProjectsPage() {
 
   if (loading) {
     return (
-      <div className="p-6 text-gray-600">
-        Loading projects...
+      <div className="py-16 flex justify-center">
+        <div className="w-6 h-6 border-2 border-gray-200 border-t-blue-600 rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="p-6">
-    
-      <div className="flex items-center justify-between mb-6">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-semibold text-gray-800">
+          <h1 className="text-xl font-semibold text-gray-900">
             My Projects
-          </h2>
+          </h1>
           <p className="text-sm text-gray-500 mt-1">
-            Manage and track all your academic projects here
+            Manage your academic work
           </p>
         </div>
 
         <Link
           href="/dashboard/student/projects/create"
-          className="bg-blue-900 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-800 transition"
+          className="bg-blue-600 text-white text-sm px-4 py-2 rounded-md hover:bg-blue-700 transition"
         >
-          + Create Project
+          Create Project
         </Link>
       </div>
 
-
+      {/* Empty State */}
       {projects.length === 0 && (
-        <div className="bg-white rounded-lg shadow p-10 text-center text-gray-500">
-          No projects created yet.
+        <div className="bg-white border border-gray-200 rounded-xl py-16 text-center text-sm text-gray-500">
+          No projects yet
         </div>
       )}
 
- 
+      {/* Projects List */}
       {projects.length > 0 && (
-        <div className="bg-white rounded-xl shadow overflow-hidden">
+        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
           <table className="w-full">
             <thead className="bg-gray-50 border-b">
               <tr>
-                <th className="text-left text-sm font-medium text-gray-600 px-6 py-3">
-                  Project Title
+                <th className="text-left text-xs font-medium text-gray-500 px-6 py-3 uppercase">
+                  Project
                 </th>
-                <th className="text-left text-sm font-medium text-gray-600 px-6 py-3">
+                <th className="text-left text-xs font-medium text-gray-500 px-6 py-3 uppercase">
                   Status
                 </th>
-                <th className="text-right text-sm font-medium text-gray-600 px-6 py-3">
+                <th className="text-right text-xs font-medium text-gray-500 px-6 py-3 uppercase">
                   Action
                 </th>
               </tr>
             </thead>
 
             <tbody>
-              {projects.map(project => (
+              {projects.map((project) => (
                 <tr
                   key={project._id}
-                  className="border-b last:border-b-0 hover:bg-gray-50 transition"
+                  className="border-b last:border-none hover:bg-gray-50 transition"
                 >
-                  <td className="px-6 py-4 font-medium text-gray-800">
+                  <td className="px-6 py-4 text-sm font-medium text-gray-900">
                     {project.title}
                   </td>
 
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    {project.status || "Pending"}
+                  <td className="px-6 py-4">
+                    <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600">
+                      {project.status || "Pending"}
+                    </span>
                   </td>
 
                   <td className="px-6 py-4 text-right">
                     <Link
                       href={`/dashboard/student/projects/${project._id}`}
-                      className="text-blue-700 text-sm hover:underline"
+                      className="text-sm text-blue-600 hover:underline"
                     >
                       View
                     </Link>

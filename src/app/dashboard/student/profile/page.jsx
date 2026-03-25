@@ -19,48 +19,37 @@ function InputField({
   onChange,
   placeholder,
   type = "text",
-  className = "",
 }) {
   return (
     <div className="space-y-1.5">
-      <label className="block text-sm font-medium text-gray-700">{label}</label>
+      <label className="text-sm font-medium text-gray-700">{label}</label>
       <input
         type={type}
         name={name}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-className={`w-full px-3 py-2 text-sm border border-gray-300 rounded-md
+        className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-md bg-white
         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-        hover:border-gray-400 transition ${className}`}      />
+        transition"
+      />
     </div>
   );
 }
 
-function SelectField({
-  label,
-  name,
-  value,
-  onChange,
-  options,
-  className = "",
-}) {
+function SelectField({ label, name, value, onChange, options }) {
   return (
     <div className="space-y-1.5">
-      <label className="block text-sm font-medium text-gray-700">
-        {label}
-      </label>
-
+      <label className="text-sm font-medium text-gray-700">{label}</label>
       <select
         name={name}
         value={value}
         onChange={onChange}
-        className={`w-full px-3 py-2 text-sm border border-gray-300 rounded-md
+        className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-md bg-white
         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-        hover:border-gray-400 transition ${className}`}
+        transition"
       >
         <option value="">Select {label}</option>
-
         {options.map((opt) => (
           <option key={opt} value={opt}>
             {opt}
@@ -79,9 +68,10 @@ export default function StudentProfilePage() {
     year: "",
     skills: "",
   });
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [status, setStatus] = useState(null); // { type: "success" | "error", message }
+  const [status, setStatus] = useState(null);
 
   useEffect(() => {
     fetch("/api/student/profile")
@@ -98,7 +88,7 @@ export default function StudentProfilePage() {
         }
       })
       .catch(() =>
-        setStatus({ type: "error", message: "Failed to load profile." }),
+        setStatus({ type: "error", message: "Failed to load profile." })
       )
       .finally(() => setLoading(false));
   }, []);
@@ -112,6 +102,7 @@ export default function StudentProfilePage() {
     e.preventDefault();
     setSaving(true);
     setStatus(null);
+
     try {
       const payload = {
         ...form,
@@ -120,12 +111,15 @@ export default function StudentProfilePage() {
           .map((s) => s.trim())
           .filter(Boolean),
       };
+
       const res = await fetch("/api/student/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+
       if (!res.ok) throw new Error();
+
       setStatus({ type: "success", message: "Profile saved successfully!" });
     } catch {
       setStatus({
@@ -137,15 +131,16 @@ export default function StudentProfilePage() {
     }
   };
 
-  if (loading)
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="flex items-center justify-center py-20">
         <div className="flex flex-col items-center gap-3 text-gray-400">
           <div className="w-8 h-8 border-2 border-gray-200 border-t-blue-500 rounded-full animate-spin" />
           <p className="text-sm">Loading profile…</p>
         </div>
       </div>
     );
+  }
 
   const skillsArray = form.skills
     .split(",")
@@ -153,123 +148,117 @@ export default function StudentProfilePage() {
     .filter(Boolean);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-6">
-      <div className="max-w-3xl mx-auto space-y-6">
-        {/* Header */}
-        <div>
-          <h1 className="text-2xl font-semibold text-gray-900">My Profile</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Update your personal and academic information.
-          </p>
+    <div className="max-w-3xl mx-auto space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-semibold text-gray-900">
+          My Profile
+        </h1>
+        <p className="text-sm text-gray-500 mt-1">
+          Update your personal and academic information.
+        </p>
+      </div>
+
+      {/* Form */}
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 space-y-6"
+      >
+        <InputField
+          label="Full Name"
+          name="name"
+          value={form.name}
+          onChange={handleChange}
+          placeholder="Enter your full name"
+        />
+
+        {/* Bio */}
+        <div className="space-y-1.5">
+          <label className="text-sm font-medium text-gray-700">Bio</label>
+          <textarea
+            name="bio"
+            value={form.bio}
+            onChange={handleChange}
+            rows={4}
+            placeholder="Write a short introduction..."
+            className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-md bg-white
+            focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
+          />
         </div>
 
-        {/* Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white border border-gray-200 shadow-sm rounded-lg p-6 space-y-6"
-        >
-          <InputField
-            label="Full Name"
-            name="name"
-            value={form.name}
+        {/* Branch + Year */}
+        <div className="grid md:grid-cols-2 gap-5">
+          <SelectField
+            label="Branch"
+            name="branch"
+            value={form.branch}
             onChange={handleChange}
-            placeholder="Full Name"
-            className="border-blue-400"
+            options={BRANCH_OPTIONS}
+          />
+          <SelectField
+            label="Year"
+            name="year"
+            value={form.year}
+            onChange={handleChange}
+            options={YEAR_OPTIONS}
+          />
+        </div>
+
+        {/* Skills */}
+        <div className="space-y-1.5">
+          <label className="text-sm font-medium text-gray-700">
+            Skills
+          </label>
+
+          <input
+            name="skills"
+            value={form.skills}
+            onChange={handleChange}
+            placeholder="React, Node.js, Python"
+            className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-md
+            focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
           />
 
-          {/* Bio */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Bio
-            </label>
+          <p className="text-xs text-gray-400">
+            Separate skills with commas
+          </p>
 
-            <textarea
-              name="bio"
-              value={form.bio}
-              onChange={handleChange}
-              placeholder="Write a short intro about yourself…"
-              rows={4}
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
-            />
-          </div>
-
-          {/* Branch + Year */}
-          <div className="grid md:grid-cols-2 gap-4 ">
-            <SelectField
-              label="Branch"
-              name="branch"
-              value={form.branch}
-              onChange={handleChange}
-              options={BRANCH_OPTIONS}
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-md shadow-sm
-focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-hover:border-gray-400 transition"
-            />
-
-            <SelectField
-              label="Year"
-              name="year"
-              value={form.year}
-              onChange={handleChange}
-              options={YEAR_OPTIONS}
-            />
-          </div>
-
-          {/* Skills */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Skills
-            </label>
-
-            <input
-              name="skills"
-              value={form.skills}
-              onChange={handleChange}
-              placeholder="React, Node.js, Python"
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-            />
-
-            <p className="text-xs text-gray-400 mt-1">
-              Separate skills using commas
-            </p>
-
-            {skillsArray.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-3">
-                {skillsArray.map((skill) => (
-                  <span
-                    key={skill}
-                    className="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-md"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Status */}
-          {status && (
-            <div
-              className={`text-sm px-4 py-2 rounded-md border ${
-                status.type === "success"
-                  ? "bg-green-50 text-green-700 border-green-200"
-                  : "bg-red-50 text-red-600 border-red-200"
-              }`}
-            >
-              {status.message}
+          {skillsArray.length > 0 && (
+            <div className="flex flex-wrap gap-2 pt-2">
+              {skillsArray.map((skill) => (
+                <span
+                  key={skill}
+                  className="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full"
+                >
+                  {skill}
+                </span>
+              ))}
             </div>
           )}
+        </div>
 
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={saving}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-md text-sm font-medium transition"
+        {/* Status */}
+        {status && (
+          <div
+            className={`text-sm px-4 py-2 rounded-md border ${
+              status.type === "success"
+                ? "bg-green-50 text-green-700 border-green-200"
+                : "bg-red-50 text-red-600 border-red-200"
+            }`}
           >
-            {saving ? "Saving..." : "Save Profile"}
-          </button>
-        </form>
-      </div>
+            {status.message}
+          </div>
+        )}
+
+        {/* Submit */}
+        <button
+          type="submit"
+          disabled={saving}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-md text-sm font-medium transition"
+        >
+          {saving ? "Saving..." : "Save Profile"}
+        </button>
+      </form>
     </div>
   );
 }

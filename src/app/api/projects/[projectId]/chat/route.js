@@ -22,6 +22,7 @@ export async function GET(req, context) {
   const isMember = project.students.some(
     (id) => id.toString() === userId
   );
+
   if (!isMember) {
     return NextResponse.json({ message: "Access denied" }, { status: 403 });
   }
@@ -51,6 +52,7 @@ export async function POST(req, context) {
   const isMember = project.students.some(
     (id) => id.toString() === userId
   );
+
   if (!isMember) {
     return NextResponse.json({ message: "Access denied" }, { status: 403 });
   }
@@ -83,7 +85,7 @@ export async function POST(req, context) {
     });
 
     fileUrl = uploadRes.secure_url;
-    fileType = uploadRes.resource_type; // image / video / raw
+    fileType = uploadRes.resource_type;
   }
 
   const message = await Message.create({
@@ -95,5 +97,6 @@ export async function POST(req, context) {
   });
 
   const populated = await message.populate("sender", "name");
+
   return NextResponse.json(populated, { status: 201 });
 }

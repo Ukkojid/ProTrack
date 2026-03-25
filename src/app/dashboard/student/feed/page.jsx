@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
@@ -14,85 +15,94 @@ export default function FeedPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading)
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="flex flex-col items-center gap-3 text-gray-400">
-          <div className="w-8 h-8 border-2 border-gray-200 border-t-blue-500 rounded-full animate-spin" />
-          <p className="text-sm">Loading feed…</p>
+        <div className="w-full max-w-2xl space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-white p-5 rounded-xl border animate-pulse">
+              <div className="h-10 w-10 bg-gray-200 rounded-full mb-3" />
+              <div className="h-3 bg-gray-200 rounded w-1/3 mb-2" />
+              <div className="h-3 bg-gray-200 rounded w-full mb-2" />
+              <div className="h-40 bg-gray-200 rounded" />
+            </div>
+          ))}
         </div>
       </div>
     );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4">
+    <div className="min-h-screen bg-gray-100 py-8 px-4">
       <div className="max-w-2xl mx-auto space-y-6">
+
         {/* Header */}
-        <div>
-          <h1 className="text-2xl font-semibold text-gray-900">
+        <div className="bg-white p-4 rounded-xl border shadow-sm">
+          <h1 className="text-xl font-semibold text-gray-900">
             Community Feed
           </h1>
           <p className="text-sm text-gray-500 mt-1">
-            See what your peers are working on.
+            Share updates, ideas, and progress with your peers
           </p>
         </div>
 
         {/* Empty State */}
         {posts.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm py-16 text-center">
-            <p className="text-3xl mb-3">📭</p>
-            <p className="text-gray-500 font-medium">No posts yet</p>
+          <div className="bg-white rounded-xl border p-10 text-center">
+            <p className="text-4xl mb-3">📭</p>
+            <p className="text-gray-600 font-medium">No posts yet</p>
             <p className="text-sm text-gray-400 mt-1">
-              Be the first to share an update!
+              Start by sharing something
             </p>
           </div>
         ) : (
           posts.map((post) => (
             <div
               key={post._id}
-              className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:border-blue-100 transition-colors"
+              className="bg-white rounded-xl border shadow-sm hover:shadow-md transition p-4"
             >
-              {/* Author Row */}
-              <Link
-                href={`/dashboard/student/profile/${post.studentId?._id}`}
-                className="flex items-center gap-3 group mb-4"
-              >
-                <img
-                  src={post.studentId?.photo || "/defult.png"}
-                  alt={post.studentId?.name || "Student"}
-                  className="w-10 h-10 rounded-full object-cover ring-2 ring-offset-1 ring-gray-100 group-hover:ring-blue-200 transition"
-                />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition truncate">
-                    {post.studentId?.name || "Unknown Student"}
-                  </p>
+              {/* Header */}
+              <div className="flex items-center gap-3 mb-3">
+                <Link href={`/dashboard/student/profile/${post.studentId?._id}`}>
+                  <img
+                    src={post.studentId?.photo || "/default.png"}
+                    className="w-10 h-10 rounded-full object-cover border"
+                  />
+                </Link>
+
+                <div className="flex-1">
+                  <Link
+                    href={`/dashboard/student/profile/${post.studentId?._id}`}
+                    className="font-semibold text-sm hover:underline"
+                  >
+                    {post.studentId?.name || "Unknown"}
+                  </Link>
+
                   <p className="text-xs text-gray-400">
-                    {new Date(post.createdAt).toLocaleString("en-IN", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                    {new Date(post.createdAt).toLocaleString()}
                   </p>
                 </div>
-                <span className="text-xs text-blue-500 opacity-0 group-hover:opacity-100 transition font-medium">
-                  View Profile →
-                </span>
-              </Link>
-              {/* Post Content */}
-              <p className="text-gray-800 text-sm whitespace-pre-line leading-relaxed">
+
+                <button className="text-gray-400 hover:text-gray-600">
+                  ⋯
+                </button>
+              </div>
+
+              {/* Content */}
+              <div className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed">
                 {post.content}
-              </p>
+              </div>
+
+              {/* Media */}
               {post.files?.length > 0 && (
-                <div className="mt-3 grid gap-2">
+                <div className="mt-3 space-y-2">
                   {post.files.map((file, i) => {
                     if (file.type === "image") {
                       return (
                         <img
                           key={i}
                           src={file.url}
-                          className="rounded-xl max-h-[420px] object-cover w-full border"
+                          className="rounded-lg w-full max-h-[400px] object-cover border"
                         />
                       );
                     }
@@ -102,7 +112,7 @@ export default function FeedPage() {
                         <video
                           key={i}
                           controls
-                          className="rounded-xl max-h-[420px] w-full border"
+                          className="rounded-lg w-full max-h-[400px] border"
                         >
                           <source src={file.url} />
                         </video>
@@ -117,8 +127,8 @@ export default function FeedPage() {
                           target="_blank"
                           className="flex items-center gap-2 border rounded-lg p-3 hover:bg-gray-50"
                         >
-                          📄{" "}
-                          <span className="text-sm text-blue-600">
+                          📄
+                          <span className="text-sm text-blue-600 truncate">
                             {file.fileName}
                           </span>
                         </a>
@@ -127,6 +137,25 @@ export default function FeedPage() {
                   })}
                 </div>
               )}
+
+              {/* Actions */}
+              <div className="flex items-center justify-between mt-4 pt-3 border-t text-sm text-gray-500">
+                <button className="flex items-center gap-1 hover:text-blue-600">
+                  👍 Like
+                </button>
+
+                <button className="flex items-center gap-1 hover:text-blue-600">
+                  💬 Comment
+                </button>
+
+                <button className="flex items-center gap-1 hover:text-blue-600">
+                  🔁 Share
+                </button>
+
+                <button className="flex items-center gap-1 hover:text-blue-600">
+                  🔖 Save
+                </button>
+              </div>
             </div>
           ))
         )}

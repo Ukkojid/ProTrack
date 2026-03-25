@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
-import Submission from "@/models/Submission"; // your submission model
+import Submission from "@/models/Submission";
 import { checkRole } from "@/lib/checkRole";
 
-export async function GET(req, context) {
+export async function GET(req, { params }) {
   await connectDB();
 
   const { error } = await checkRole(["faculty", "student"]);
   if (error) return error;
 
-  const { projectId } = await context.params;
+  const { projectId } = await params;
 
   const submissions = await Submission.find({ project: projectId })
     .populate("student", "name email")

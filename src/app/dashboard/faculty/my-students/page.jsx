@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import StudentTable from "./StudentTable";
+import { FaUsers, FaProjectDiagram, FaClock } from "react-icons/fa";
 
 export default function MyStudentsPage() {
   const [search, setSearch] = useState("");
@@ -42,39 +43,84 @@ export default function MyStudentsPage() {
   }, []);
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-    
-      <div className="mb-6 flex flex-col md:flex-row justify-between md:items-center">
-        <h1 className="text-3xl font-bold text-gray-800">My Students</h1>
+    <div className="space-y-6">
+
+      {/* HEADER */}
+      <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold text-gray-900">
+            My Students
+          </h1>
+          <p className="text-sm text-gray-500">
+            Manage your students and their project progress
+          </p>
+        </div>
+
         <input
           type="text"
           placeholder="Search project or student..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="p-2 border rounded w-full md:w-64 mt-4 md:mt-0"
+          className="w-full md:w-72 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-white shadow-sm"
         />
       </div>
 
-     
-      <div className="grid md:grid-cols-3 gap-6 mb-6">
-        <StatCard label="Total Students" value={stats.totalStudents} loading={loadingStats} />
-        <StatCard label="Active Projects" value={stats.activeProjects} loading={loadingStats} />
-        <StatCard label="Pending Reviews" value={stats.pendingReviews} loading={loadingStats} />
+      {/* STATS */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <StatCard
+          label="Total Students"
+          value={stats.totalStudents}
+          loading={loadingStats}
+          icon={<FaUsers />}
+          color="blue"
+        />
+        <StatCard
+          label="Active Projects"
+          value={stats.activeProjects}
+          loading={loadingStats}
+          icon={<FaProjectDiagram />}
+          color="green"
+        />
+        <StatCard
+          label="Pending Reviews"
+          value={stats.pendingReviews}
+          loading={loadingStats}
+          icon={<FaClock />}
+          color="orange"
+        />
       </div>
 
-      
-      <StudentTable projects={projects} search={search} />
+      {/* TABLE */}
+      <div className="bg-white border rounded-xl shadow-sm p-5">
+        <StudentTable projects={projects} search={search} />
+      </div>
+
     </div>
   );
 }
 
-function StatCard({ label, value, loading }) {
+/* STATS CARD */
+function StatCard({ label, value, loading, icon, color }) {
+  const colorMap = {
+    blue: "text-blue-600 bg-blue-50",
+    green: "text-green-600 bg-green-50",
+    orange: "text-orange-600 bg-orange-50",
+  };
+
   return (
-    <div className="bg-white p-6 rounded-xl shadow">
-      <h3 className="text-gray-600">{label}</h3>
-      <p className="text-3xl font-bold">
-        {loading ? "..." : value}
-      </p>
+    <div className="bg-white border rounded-xl p-5 shadow-sm hover:shadow-md transition">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm text-gray-500">{label}</p>
+          <p className="text-2xl font-semibold text-gray-900 mt-1">
+            {loading ? "..." : value}
+          </p>
+        </div>
+
+        <div className={`p-3 rounded-lg ${colorMap[color]}`}>
+          {icon}
+        </div>
+      </div>
     </div>
   );
 }
