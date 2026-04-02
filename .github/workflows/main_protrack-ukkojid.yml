@@ -20,10 +20,14 @@ jobs:
         run: |
           npm install
           npm run build
+
+      - name: Copy static and public files
+        run: |
           cp package.json .next/standalone/
           cp ecosystem.config.js .next/standalone/
-          mv .next/static .next/standalone/.next/static
-          mv public .next/standalone/public
+          mkdir -p .next/standalone/.next
+          cp -r .next/static .next/standalone/.next/static
+          cp -r public .next/standalone/public
 
       - name: Azure Login
         uses: azure/login@v2
