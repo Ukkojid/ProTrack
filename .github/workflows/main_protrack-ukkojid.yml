@@ -39,3 +39,6 @@ jobs:
         with:
           app-name: "protrack-ukkojid"
           package: .next/standalone
+
+      - name: Set working directory
+        run: echo "PROJECT_ROOT=$(pwd)" >> $GITHUB_ENV

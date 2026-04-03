@@ -1,7 +1,9 @@
-/** @type {import('next').NextConfig} */
 const nextConfig = {
-    devIndicators: false,
-    output: 'standalone'
+  output: 'standalone',
+  experimental: {
+    appDir: true
+  },
+  distDir: '.next'
 };
 
 export default nextConfig;
