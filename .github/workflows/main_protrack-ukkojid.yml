@@ -21,10 +21,10 @@ jobs:
           npm install
           npm run build
 
-      - name: Copy static and public files
+      - name: Copy standalone files
         run: |
           cp package.json .next/standalone/
-          cp ecosystem.config.js .next/standalone/
+          cp server.js .next/standalone/   # 🔥 IMPORTANT
           mkdir -p .next/standalone/.next
           cp -r .next/static .next/standalone/.next/static
           cp -r public .next/standalone/public
