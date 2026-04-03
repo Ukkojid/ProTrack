@@ -24,10 +24,11 @@ jobs:
       - name: Copy standalone files
         run: |
           cp package.json .next/standalone/
-          cp server.js .next/standalone/   # 🔥 IMPORTANT
+          cp server.js .next/standalone/
           mkdir -p .next/standalone/.next
           cp -r .next/static .next/standalone/.next/static
           cp -r public .next/standalone/public
+          echo "node server.js" > .next/standalone/startup.sh
 
       - name: Azure Login
         uses: azure/login@v2
